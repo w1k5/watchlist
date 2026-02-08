@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Watchlist Heatmap Results</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <main class="container wide">
+      <h1>Watchlist Heatmap / Attention Numbers</h1>
+      <form method="post" action="/run" onsubmit="setLoading(this)">
+        <label for="tickers_input">Tickers</label>
+        <textarea id="tickers_input" name="tickers_input" rows="8">{{ raw_input }}</textarea>
+        <div class="form-actions">
+          <button id="runButton" type="submit">Run</button>
+          <a class="ghost" href="/">Reset</a>
+          <span id="loadingHint" class="subtle hidden">Refreshing analysis…</span>
+        </div>
+      </form>
+
+      <section>
+        <h2>Results</h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th title="Ticker exactly as entered">Ticker</th>
+                <th title="Roll-up severity based on triggered flags">Status</th>
+                <th title="1-day close-to-close return percent">1D %</th>
+                <th title="5-trading-day return percent">5D %</th>
+                <th title="~1 month return (21 trading days)">21D %</th>
+                <th title="Distance from 200-day moving average">Dist 200DMA %</th>
+                <th title="20-day realized volatility annualized">Vol20 %</th>
+                <th title="Vol20 percentile vs ~3-year history">Vol pctile</th>
+                <th title="(High-Low)/Close for latest day">Range 1D %</th>
+                <th title="1D range percentile vs ~3-year history">Range pctile</th>
+                <th title="30-day rolling return correlation to SPY">Corr30 to SPY</th>
+                <th title="Change in Corr30 vs 30 sessions earlier">Corr change</th>
+                <th title="Short interpretation of what matters now">Attention</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for row in results %}
+              <tr>
+                <td>{{ row.ticker }}</td>
+                <td><span class="badge {{ row.status|lower }}">{{ row.status }}</span></td>
+                <td>{{ row.metrics.get('1D %', '—') }}</td>
+                <td>{{ row.metrics.get('5D %', '—') }}</td>
+                <td>{{ row.metrics.get('21D %', '—') }}</td>
+                <td>{{ row.metrics.get('Dist 200DMA %', '—') }}</td>
+                <td>{{ row.metrics.get('Vol20 %', '—') }}</td>
+                <td>{{ row.metrics.get('Vol pctile', '—') }}</td>
+                <td>{{ row.metrics.get('Range 1D %', '—') }}</td>
+                <td>{{ row.metrics.get('Range pctile', '—') }}</td>
+                <td>{{ row.metrics.get('Corr30 to SPY', '—') }}</td>
+                <td>{{ row.metrics.get('Corr change', '—') }}</td>
+                <td class="attention">{{ row.attention_text }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+    <script>
+      function setLoading(form) {
+        const btn = form.querySelector('#runButton');
+        const hint = form.querySelector('#loadingHint');
+        if (btn) btn.disabled = true;
+        if (hint) hint.classList.remove('hidden');
+      }
+    </script>
+  </body>
+</html>
