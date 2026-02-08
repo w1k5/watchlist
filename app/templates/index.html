@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Watchlist Heatmap</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <main class="container">
+      <h1>Watchlist Heatmap / Attention Numbers</h1>
+      <p class="subtle">Paste a column of tickers, then run daily-close diagnostics.</p>
+      <form method="post" action="/run" onsubmit="setLoading(this)">
+        <label for="tickers_input">Tickers</label>
+        <textarea id="tickers_input" name="tickers_input" rows="14" placeholder="Ticker&#10;GLD&#10;VAW&#10;IBIT">{{ raw_input }}</textarea>
+        <div class="form-actions">
+          <button id="runButton" type="submit">Run</button>
+          <span id="loadingHint" class="subtle hidden">Loading prices and computing signals…</span>
+        </div>
+      </form>
+    </main>
+    <script>
+      function setLoading(form) {
+        const btn = form.querySelector('#runButton');
+        const hint = form.querySelector('#loadingHint');
+        if (btn) btn.disabled = true;
+        if (hint) hint.classList.remove('hidden');
+      }
+    </script>
+  </body>
+</html>

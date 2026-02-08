@@ -1,0 +1,89 @@
+:root {
+  color-scheme: light dark;
+  font-family: Inter, system-ui, sans-serif;
+}
+body {
+  margin: 0;
+  background: #111;
+  color: #eee;
+}
+.container {
+  max-width: 760px;
+  margin: 2rem auto;
+  padding: 1.25rem;
+}
+.container.wide {
+  max-width: 1400px;
+}
+h1, h2 {
+  margin: 0 0 0.75rem;
+}
+.subtle {
+  color: #bdbdbd;
+}
+.hidden {
+  display: none;
+}
+form {
+  display: grid;
+  gap: 0.65rem;
+  margin-bottom: 1.25rem;
+}
+.form-actions {
+  display: flex;
+  gap: 0.65rem;
+  align-items: center;
+}
+textarea {
+  width: 100%;
+  border-radius: 8px;
+  border: 1px solid #333;
+  background: #1a1a1a;
+  color: inherit;
+  padding: 0.75rem;
+  font: inherit;
+}
+button, .ghost {
+  width: fit-content;
+  border: 1px solid #555;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  background: #222;
+  color: inherit;
+  text-decoration: none;
+}
+button:disabled {
+  opacity: 0.55;
+  cursor: wait;
+}
+.table-wrap {
+  overflow: auto;
+  border: 1px solid #2d2d2d;
+  border-radius: 8px;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+th, td {
+  border-bottom: 1px solid #2d2d2d;
+  padding: 0.5rem;
+  text-align: left;
+  white-space: nowrap;
+}
+.attention {
+  white-space: normal;
+  min-width: 350px;
+}
+.badge {
+  border-radius: 12px;
+  border: 1px solid #666;
+  padding: 0.1rem 0.5rem;
+  font-size: 0.8rem;
+}
+.badge.normal { border-color: #2e7d32; color: #9ccc65; }
+.badge.watch { border-color: #ef6c00; color: #ffb74d; }
+.badge.attention { border-color: #d4ac0d; color: #f4d03f; }
+.badge.stress { border-color: #c62828; color: #ef9a9a; }
+.badge.unavailable { border-color: #757575; color: #bdbdbd; }
