@@ -22,14 +22,38 @@
           <span id="loadingHint" class="subtle hidden">Loading prices and computing signals…</span>
         </div>
       </form>
+      <section id="savedResults" class="hidden"></section>
     </main>
     <script>
+      const LAST_RESULTS_KEY = 'watchlist:last-results-html';
+      const LAST_INPUT_KEY = 'watchlist:last-input';
+
       function setLoading(form) {
         const btn = form.querySelector('#runButton');
         const hint = form.querySelector('#loadingHint');
         if (btn) btn.disabled = true;
         if (hint) hint.classList.remove('hidden');
       }
+
+      function restoreLastRun() {
+        const savedResults = localStorage.getItem(LAST_RESULTS_KEY);
+        const savedInput = localStorage.getItem(LAST_INPUT_KEY);
+
+        if (savedInput) {
+          const textarea = document.getElementById('tickers_input');
+          if (textarea) textarea.value = savedInput;
+        }
+
+        if (savedResults) {
+          const container = document.getElementById('savedResults');
+          if (container) {
+            container.innerHTML = savedResults;
+            container.classList.remove('hidden');
+          }
+        }
+      }
+
+      restoreLastRun();
     </script>
   </body>
 </html>
