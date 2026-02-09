@@ -21,7 +21,12 @@ class Settings:
     cache_path: Path = Path("data/cache.sqlite3")
     lookback_days: int = 5 * 365
     percentile_window_days: int = 3 * 365
-    big_move_threshold_pct: float = 2.0
+    big_move_threshold_pct_equity: float = 2.5
+    big_move_threshold_pct_commodity: float = 2.0
+    big_move_threshold_pct_rates: float = 1.5
+    big_move_threshold_pct_crypto: float = 5.0
+    regime_high_range_percentile: float = 85.0
+    regime_big_move_bump_pct: float = 1.0
     vol_spike_percentile: float = 90.0
     range_spike_percentile: float = 95.0
     extreme_range_percentile: float = 98.0

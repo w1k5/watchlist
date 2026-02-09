@@ -39,8 +39,10 @@
                 <th title="Vol20 percentile vs ~3-year history">Vol pctile</th>
                 <th title="(High-Low)/Close for latest day">Range 1D %</th>
                 <th title="1D range percentile vs ~3-year history">Range pctile</th>
-                <th title="30-day rolling return correlation to SPY">Corr30 to SPY</th>
-                <th title="Change in Corr30 vs 30 sessions earlier">Corr change</th>
+                <th title="30-day rolling return correlation to SPY (-1.00 to +1.00)">Corr30 to SPY</th>
+                <th title="Change in Corr30 vs 30 sessions earlier (same -1..+1 unit)">Corr change</th>
+                <th title="Rows of clean daily history used">History</th>
+                <th title="Data sufficiency for stable percentile/trend stats">Data quality</th>
                 <th title="Short interpretation of what matters now">Attention</th>
               </tr>
             </thead>
@@ -59,6 +61,8 @@
                 <td>{{ row.metrics.get('Range pctile', '—') }}</td>
                 <td>{{ row.metrics.get('Corr30 to SPY', '—') }}</td>
                 <td>{{ row.metrics.get('Corr change', '—') }}</td>
+                <td>{{ row.metrics.get('History', '—') }}</td>
+                <td>{{ row.metrics.get('Data quality', '—') }}</td>
                 <td class="attention">{{ row.attention_text }}</td>
               </tr>
               {% endfor %}
