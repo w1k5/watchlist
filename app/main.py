@@ -98,7 +98,15 @@ def run_analysis(tickers_input: str) -> list[TickerResult]:
             continue
 
         if len(frame) < 30:
-            results.append(TickerResult(ticker=ticker, reason=f"Too-short history ({len(frame)} rows)", metrics={"History": str(len(frame)), "Data quality": "LOW"}))
+            data_date = frame.index[-1]
+            data_date_str = data_date.strftime("%Y-%m-%d") if hasattr(data_date, "strftime") else str(data_date)
+            results.append(
+                TickerResult(
+                    ticker=ticker,
+                    reason=f"Too-short history ({len(frame)} rows)",
+                    metrics={"Data date": data_date_str, "History": str(len(frame)), "Data quality": "LOW"},
+                )
+            )
             continue
 
         analyzed = analyze_ticker(ticker, frame, spy_returns, spy_range_pctile)
