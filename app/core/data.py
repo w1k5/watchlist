@@ -26,6 +26,9 @@ class StooqClient:
 
     def fetch(self, ticker: str) -> tuple[pd.DataFrame | None, str | None, str | None]:
         """Returns dataframe, resolved symbol, and error reason."""
+        parse_errors = 0
+        schema_errors = 0
+
         for symbol in stooq_candidates(ticker):
             cached_today = self.cache.get_today(symbol)
             csv_blob = cached_today
@@ -43,17 +46,24 @@ class StooqClient:
             try:
                 frame = pd.read_csv(StringIO(csv_blob))
             except Exception:
+                parse_errors += 1
                 continue
 
             required = {"Date", "Open", "High", "Low", "Close"}
             if frame.empty or not required.issubset(frame.columns):
+                schema_errors += 1
                 continue
 
             frame["Date"] = pd.to_datetime(frame["Date"], errors="coerce")
             frame = frame.dropna(subset=["Date"]).sort_values("Date").set_index("Date")
             frame = frame.apply(pd.to_numeric, errors="coerce").dropna(subset=["Close", "High", "Low"])
             if frame.empty:
+                schema_errors += 1
                 continue
             return frame, symbol, None
 
+        if parse_errors:
+            return None, None, "Stooq data parse error"
+        if schema_errors:
+            return None, None, "Stooq data missing required OHLC columns"
         return None, None, "No Stooq data found for ticker"

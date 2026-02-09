@@ -9,7 +9,7 @@ from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
-from .core.analytics import analyze_ticker
+from .core.analytics import analyze_ticker, compute_metrics
 from .core.cache import PriceCache
 from .core.config import settings
 from .core.data import StooqClient
@@ -86,6 +86,10 @@ def run_analysis(tickers_input: str) -> list[TickerResult]:
 
     spy_frame, _, _ = client.fetch("SPY")
     spy_returns = spy_frame["Close"].pct_change() if spy_frame is not None else None
+    spy_range_pctile = None
+    if spy_frame is not None:
+        spy_metrics = compute_metrics(spy_frame, spy_returns)
+        spy_range_pctile = spy_metrics.get("range_pctile")
 
     for ticker in tickers:
         frame, resolved_symbol, reason = client.fetch(ticker)
@@ -93,7 +97,11 @@ def run_analysis(tickers_input: str) -> list[TickerResult]:
             results.append(TickerResult(ticker=ticker, reason=reason or "Unavailable"))
             continue
 
-        analyzed = analyze_ticker(ticker, frame, spy_returns)
+        if len(frame) < 30:
+            results.append(TickerResult(ticker=ticker, reason=f"Too-short history ({len(frame)} rows)", metrics={"History": str(len(frame)), "Data quality": "LOW"}))
+            continue
+
+        analyzed = analyze_ticker(ticker, frame, spy_returns, spy_range_pctile)
         if resolved_symbol and resolved_symbol.lower() != ticker.lower():
             analyzed.notes.append(f"Source symbol: {resolved_symbol}")
         results.append(analyzed)

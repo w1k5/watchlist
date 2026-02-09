@@ -6,7 +6,7 @@ A small FastAPI app that lets you paste a column of tickers and get a daily-clos
 - distance to 200DMA
 - 20D realized vol + percentile
 - 1D range + percentile
-- 30D correlation to SPY + correlation change
+- 30D correlation to SPY + correlation change (both shown in raw correlation units, -1..+1)
 - attention notes and severity labels (`NORMAL`, `WATCH`, `ATTENTION`, `STRESS`)
 
 The app uses **Stooq** daily OHLC data and handles unavailable symbols without breaking the whole run.
@@ -105,7 +105,7 @@ curl -X POST http://localhost:8080/api/run \
 ## 5) Data + caching behavior
 
 - Source: `https://stooq.com/q/d/l/?s=<symbol>&i=d`
-- The app tries normalized symbol variants (`ticker`, `ticker.us`)
+- The app tries normalized symbol variants (`ticker`, `ticker.us`) and reports parse/schema vs not-found failures distinctly
 - Daily CSV responses are cached in local SQLite (`data/cache.sqlite3`)
 - If a fetch fails, the app can fall back to latest cached data
 
