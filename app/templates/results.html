@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Watchlist Heatmap Results</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Ctext y=%27.9em%27 font-size=%2790%27%3E%F0%9F%94%A5%3C/text%3E%3C/svg%3E" />
     <link rel="stylesheet" href="/static/styles.css" />
   </head>
   <body>
@@ -31,6 +32,7 @@
               <tr>
                 <th title="Ticker exactly as entered">Ticker</th>
                 <th title="Roll-up severity based on triggered flags">Status</th>
+                <th title="Most recent market date used for this ticker's data">Data date</th>
                 <th title="1-day close-to-close return percent">1D %</th>
                 <th title="5-trading-day return percent">5D %</th>
                 <th title="~1 month return (21 trading days)">21D %</th>
@@ -51,6 +53,7 @@
               <tr>
                 <td>{{ row.ticker }}</td>
                 <td><span class="badge {{ row.status|lower }}">{{ row.status }}</span></td>
+                <td>{{ row.metrics.get('Data date', '—') }}</td>
                 <td>{{ row.metrics.get('1D %', '—') }}</td>
                 <td>{{ row.metrics.get('5D %', '—') }}</td>
                 <td>{{ row.metrics.get('21D %', '—') }}</td>

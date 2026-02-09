@@ -203,7 +203,11 @@ def analyze_ticker(
 ) -> TickerResult:
     metrics = compute_metrics(frame, spy_returns)
     status, notes = attention_for(ticker, metrics, spy_range_pctile)
+    data_date = frame.index[-1]
+    data_date_str = data_date.strftime("%Y-%m-%d") if hasattr(data_date, "strftime") else str(data_date)
+
     pretty_metrics = {
+        "Data date": data_date_str,
         "1D %": _format_metric(metrics["ret_1d"]),
         "5D %": _format_metric(metrics["ret_5d"]),
         "21D %": _format_metric(metrics["ret_21d"]),
