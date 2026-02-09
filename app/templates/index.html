@@ -13,6 +13,10 @@
       <form method="post" action="/run" onsubmit="setLoading(this)">
         <label for="tickers_input">Tickers</label>
         <textarea id="tickers_input" name="tickers_input" rows="14" placeholder="Ticker&#10;GLD&#10;VAW&#10;IBIT">{{ raw_input }}</textarea>
+        {% if token_required %}
+        <label for="token">Access token</label>
+        <input id="token" name="token" type="password" placeholder="Enter access token" value="{{ token or '' }}" />
+        {% endif %}
         <div class="form-actions">
           <button id="runButton" type="submit">Run</button>
           <span id="loadingHint" class="subtle hidden">Loading prices and computing signals…</span>

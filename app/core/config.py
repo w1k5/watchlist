@@ -1,7 +1,18 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
+import os
+from dataclasses import dataclass, field
 from pathlib import Path
+
+
+def _env_int(name: str, default: int) -> int:
+    raw = os.getenv(name)
+    if raw is None:
+        return default
+    try:
+        return int(raw)
+    except ValueError:
+        return default
 
 
 @dataclass(frozen=True)
@@ -16,6 +27,10 @@ class Settings:
     extreme_range_percentile: float = 98.0
     diversifier_corr_threshold: float = 0.6
     diversifier_corr_change_threshold: float = 0.2
+
+    # Security / abuse controls
+    app_access_token: str = field(default_factory=lambda: os.getenv("APP_ACCESS_TOKEN", ""))
+    requests_per_minute: int = field(default_factory=lambda: _env_int("REQUESTS_PER_MINUTE", 12))
 
 
 settings = Settings()

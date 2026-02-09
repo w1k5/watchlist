@@ -1,6 +1,0 @@
-services:
-  - type: web
-    name: watchlist-heatmap
-    env: docker
-    plan: free
-    autoDeploy: true
