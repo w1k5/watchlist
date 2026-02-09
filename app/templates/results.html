@@ -23,7 +23,7 @@
         </div>
       </form>
 
-      <section>
+      <section id="resultsSection">
         <h2>Results</h2>
         <div class="table-wrap">
           <table>
@@ -72,12 +72,28 @@
       </section>
     </main>
     <script>
+      const LAST_RESULTS_KEY = 'watchlist:last-results-html';
+      const LAST_INPUT_KEY = 'watchlist:last-input';
+
       function setLoading(form) {
         const btn = form.querySelector('#runButton');
         const hint = form.querySelector('#loadingHint');
         if (btn) btn.disabled = true;
         if (hint) hint.classList.remove('hidden');
       }
+
+      function persistLastRun() {
+        const resultsSection = document.getElementById('resultsSection');
+        const textarea = document.getElementById('tickers_input');
+        if (resultsSection) {
+          localStorage.setItem(LAST_RESULTS_KEY, resultsSection.outerHTML);
+        }
+        if (textarea) {
+          localStorage.setItem(LAST_INPUT_KEY, textarea.value);
+        }
+      }
+
+      persistLastRun();
     </script>
   </body>
 </html>
