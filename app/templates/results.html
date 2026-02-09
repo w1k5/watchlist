@@ -12,6 +12,10 @@
       <form method="post" action="/run" onsubmit="setLoading(this)">
         <label for="tickers_input">Tickers</label>
         <textarea id="tickers_input" name="tickers_input" rows="8">{{ raw_input }}</textarea>
+        {% if token_required %}
+        <label for="token">Access token</label>
+        <input id="token" name="token" type="password" placeholder="Enter access token" value="{{ token or '' }}" />
+        {% endif %}
         <div class="form-actions">
           <button id="runButton" type="submit">Run</button>
           <a class="ghost" href="/">Reset</a>

@@ -35,12 +35,12 @@ pip install -r requirements.txt
 Run the app:
 
 ```bash
-uvicorn app.main:app --host 0.0.0.0 --port 10000 --reload
+REQUESTS_PER_MINUTE=12 APP_ACCESS_TOKEN=change-me uvicorn app.main:app --host 0.0.0.0 --port 8080 --reload
 ```
 
 Open:
 
-- http://localhost:10000
+- http://localhost:8080
 
 ### Option B: Docker
 
@@ -53,12 +53,12 @@ docker build -t watchlist-heatmap .
 Run:
 
 ```bash
-docker run --rm -p 10000:10000 watchlist-heatmap
+docker run --rm -p 8080:8080 -e REQUESTS_PER_MINUTE=12 -e APP_ACCESS_TOKEN=change-me watchlist-heatmap
 ```
 
 Open:
 
-- http://localhost:10000
+- http://localhost:8080
 
 ---
 
@@ -89,11 +89,14 @@ You’ll get:
 
 `POST /api/run` accepts form data (`tickers_input`) and returns JSON.
 
+Rate limiting and optional access token protection apply to both `/run` and `/api/run`.
+
 Example:
 
 ```bash
-curl -X POST http://localhost:10000/api/run \
+curl -X POST http://localhost:8080/api/run \
   -H "Content-Type: application/x-www-form-urlencoded" \
+  -H "X-Access-Token: change-me" \
   --data-urlencode $'tickers_input=Ticker\nGLD\nVAW\nIBIT'
 ```
 
@@ -108,27 +111,62 @@ curl -X POST http://localhost:10000/api/run \
 
 ---
 
-## 6) Render deployment
+## 6) Google Cloud Run deployment
 
 This repo includes:
 
-- `Dockerfile`
-- `render.yaml`
+- `Dockerfile` (Cloud Run-compatible by honoring the `$PORT` environment variable)
+- `cloudrun.yaml` (optional service manifest)
 
 ### Quick path
 
-1. Push repo to GitHub.
-2. In Render, create a new **Web Service** from this repo.
-3. Use Docker environment (or let `render.yaml` configure it).
-4. Start command is already handled by Docker CMD:
+1. Authenticate and set your project:
 
 ```bash
-uvicorn app.main:app --host 0.0.0.0 --port 10000
+gcloud auth login
+gcloud config set project YOUR_GCP_PROJECT_ID
+```
+
+2. Enable required APIs:
+
+```bash
+gcloud services enable run.googleapis.com cloudbuild.googleapis.com artifactregistry.googleapis.com
+```
+
+3. Deploy directly from source:
+
+```bash
+gcloud run deploy watchlist-heatmap \
+  --source . \
+  --region us-central1 \
+  --no-allow-unauthenticated \
+  --set-env-vars REQUESTS_PER_MINUTE=12,APP_ACCESS_TOKEN=change-me
+```
+
+Cloud Run sets `PORT` automatically (typically `8080`), and the container startup command already uses it.
+
+Use IAM + `APP_ACCESS_TOKEN` to avoid exposing unthrottled public endpoints.
+
+### Optional: deploy with manifest
+
+If you prefer a declarative service definition:
+
+```bash
+gcloud run services replace cloudrun.yaml --region us-central1
 ```
 
 ---
 
-## 7) Project structure
+## 7) Security defaults
+
+- Requests are rate-limited in-app per client IP (default: `12` per minute).
+- Set `REQUESTS_PER_MINUTE` to tune throttling for your use case.
+- Set `APP_ACCESS_TOKEN` to require a secret token for `/run` and `/api/run`.
+- For Cloud Run, keep `--no-allow-unauthenticated` unless you intentionally need public access.
+
+---
+
+## 8) Project structure
 
 ```text
 app/
@@ -147,12 +185,12 @@ app/
     styles.css
 requirements.txt
 Dockerfile
-render.yaml
+cloudrun.yaml
 ```
 
 ---
 
-## 8) Known limitations (V1)
+## 9) Known limitations (V1)
 
 With Stooq-only coverage:
 

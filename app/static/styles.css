@@ -34,7 +34,7 @@ form {
   gap: 0.65rem;
   align-items: center;
 }
-textarea {
+textarea, input {
   width: 100%;
   border-radius: 8px;
   border: 1px solid #333;

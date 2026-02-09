@@ -1,0 +1,16 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: watchlist-heatmap
+spec:
+  template:
+    spec:
+      containers:
+        - image: us-docker.pkg.dev/PROJECT_ID/REPOSITORY/watchlist-heatmap:latest
+          env:
+            - name: REQUESTS_PER_MINUTE
+              value: "12"
+            - name: APP_ACCESS_TOKEN
+              value: "REPLACE_ME"
+          ports:
+            - containerPort: 8080
